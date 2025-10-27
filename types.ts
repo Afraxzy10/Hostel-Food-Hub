@@ -1,9 +1,10 @@
 export enum Department {
   CSE = 'Computer Science',
   ECE = 'Electronics & Communication',
-  MECH = 'Mechanical',
-  CIVIL = 'Civil',
+  EEE = 'Electrical & Electronics',
+  MECH = 'Mechnical',
   IT = 'Information Technology',
+  AIDS = 'Artificial Intelligence & Data Science',
 }
 
 export enum Year {
