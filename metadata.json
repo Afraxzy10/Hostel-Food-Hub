@@ -1,0 +1,5 @@
+{
+  "name": "Hostel Food Preference Hub",
+  "description": "A simple web application for college hostels to efficiently collect and manage daily food preferences from students, providing a dashboard for wardens to view aggregated data.",
+  "requestFramePermissions": []
+}
