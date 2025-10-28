@@ -8,6 +8,7 @@ export const DEPARTMENTS: Department[] = [
   Department.MECH,
   Department.IT,
   Department.AIDS,
+  Department.MBA,
 ];
 
 export const YEARS: Year[] = [Year.FIRST, Year.SECOND, Year.THIRD, Year.FOURTH];
