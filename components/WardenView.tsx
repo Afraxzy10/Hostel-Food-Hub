@@ -8,6 +8,14 @@ interface WardenViewProps {
   onLogout: () => void;
 }
 
+const preferenceDisplayMap: Record<PreferenceChoice, string> = {
+    [PreferenceChoice.EGG]: 'Needs Egg',
+    [PreferenceChoice.SKIP_EGG]: 'Skips Egg',
+    [PreferenceChoice.VEG]: 'Veg',
+    [PreferenceChoice.NON_VEG]: 'Non-Veg',
+    [PreferenceChoice.SKIP_MEAL]: 'Skips Meal',
+};
+
 const createEmptyDailyCounts = (): DailyCounts => ({ egg: 0, veg: 0, nonVeg: 0, skipped: 0, total: 0 });
 
 const createInitialCounts = (): AggregatedCounts => {
@@ -24,7 +32,13 @@ const createInitialCounts = (): AggregatedCounts => {
     return counts;
 };
 
-const DepartmentAccordion: React.FC<{ department: Department; counts: DepartmentCounts }> = ({ department, counts }) => {
+interface DepartmentAccordionProps {
+    department: Department;
+    counts: DepartmentCounts;
+    preferences: Preference[];
+}
+
+const DepartmentAccordion: React.FC<DepartmentAccordionProps> = ({ department, counts, preferences }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -70,6 +84,24 @@ const DepartmentAccordion: React.FC<{ department: Department; counts: Department
                             </tr>
                         </tbody>
                     </table>
+                    {preferences.length > 0 ? (
+                        <div className="mt-6">
+                            <h4 className="text-md font-semibold text-gray-800 border-b pb-2 mb-3">Student Submissions</h4>
+                            <ul className="space-y-2 max-h-60 overflow-y-auto pr-2">
+                                {preferences.map((pref) => (
+                                    <li key={`${pref.identity.department}-${pref.identity.year}-${pref.identity.name}`} className="text-sm flex justify-between items-center p-2 bg-gray-50 rounded">
+                                        <span>
+                                            <span className="font-semibold text-gray-700">{pref.identity.name}</span>
+                                            <span className="text-gray-500 ml-2">({pref.identity.year}{pref.identity.year === 1 ? 'st' : pref.identity.year === 2 ? 'nd' : pref.identity.year === 3 ? 'rd' : 'th'} Year)</span>
+                                        </span>
+                                        <span className="font-medium text-indigo-600 px-2 py-1 bg-indigo-50 rounded-md">{preferenceDisplayMap[pref.choice]}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ) : (
+                        <p className="mt-4 text-sm text-center text-gray-500 italic">No submissions from this department yet.</p>
+                    )}
                 </div>
             )}
         </div>
@@ -132,20 +164,22 @@ export const WardenView: React.FC<WardenViewProps> = ({ onLogout }) => {
       </div>
 
       <div className="bg-white p-4 rounded-lg shadow-md mb-8 flex flex-wrap justify-between items-center gap-4">
-        <div className="font-semibold text-gray-700">
-            Submission Status: 
-            <span className={`ml-2 px-3 py-1 text-sm rounded-full ${submissionsOpen ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                {submissionsOpen ? 'OPEN' : 'CLOSED'}
-            </span>
-        </div>
-        <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-600">Close</span>
-            <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" checked={submissionsOpen} onChange={handleToggleSubmissions} className="sr-only peer" />
-                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 peer-checked:bg-blue-600"></div>
-                <div className="absolute left-1 top-0.5 w-5 h-5 bg-white rounded-full transition-transform peer-checked:translate-x-full"></div>
-            </label>
-            <span className="text-sm text-gray-600">Open</span>
+        <div className="flex items-center space-x-4">
+            <div className="font-semibold text-gray-700">
+                Submission Status: 
+                <span className={`ml-2 px-3 py-1 text-sm rounded-full ${submissionsOpen ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                    {submissionsOpen ? 'OPEN' : 'CLOSED'}
+                </span>
+            </div>
+            <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600">Close</span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" checked={submissionsOpen} onChange={handleToggleSubmissions} className="sr-only peer" />
+                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 peer-checked:bg-blue-600"></div>
+                    <div className="absolute left-1 top-0.5 w-5 h-5 bg-white rounded-full transition-transform peer-checked:translate-x-full"></div>
+                </label>
+                <span className="text-sm text-gray-600">Open</span>
+            </div>
         </div>
       </div>
       
@@ -162,9 +196,15 @@ export const WardenView: React.FC<WardenViewProps> = ({ onLogout }) => {
       
       <div>
         {DEPARTMENTS.map(dept => (
-            <DepartmentAccordion key={dept} department={dept} counts={aggregatedCounts[dept]} />
+            <DepartmentAccordion 
+                key={dept} 
+                department={dept} 
+                counts={aggregatedCounts[dept]} 
+                preferences={preferences.filter(p => p.identity.department === dept)} 
+            />
         ))}
       </div>
+
     </div>
   );
 };
