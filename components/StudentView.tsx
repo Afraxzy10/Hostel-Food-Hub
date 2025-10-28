@@ -1,3 +1,5 @@
+import { db } from "../firebaseConfig";
+import { collection, addDoc } from "firebase/firestore";
 import React, { useState, useEffect } from 'react';
 import { UserIdentity, Preference, PreferenceChoice } from '../types';
 import { savePreference, hasSubmittedToday, areSubmissionsOpen } from '../services/preferenceService';
