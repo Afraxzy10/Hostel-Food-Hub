@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Department, Year, UserIdentity } from './types';
 import { DEPARTMENTS, YEARS } from './constants';
@@ -21,11 +20,11 @@ const App: React.FC = () => {
   const [wardenError, setWardenError] = useState('');
 
   const handleStudentLogin = () => {
-    if (!department || !year) {
-        setError('Please select both department and year.');
+    if (!department || !year || !name.trim()) {
+        setError('Please select department, year, and enter your name.');
         return;
     }
-    const newIdentity: UserIdentity = { department, year, name: name.trim() || undefined };
+    const newIdentity: UserIdentity = { department, year, name: name.trim() };
     setIdentity(newIdentity);
     setView('STUDENT');
     setError('');
@@ -84,7 +83,7 @@ const App: React.FC = () => {
                         </select>
                     </div>
                     <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name (Optional)</label>
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
                         <input
                             type="text"
                             id="name"
