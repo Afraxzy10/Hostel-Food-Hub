@@ -2,9 +2,10 @@ export enum Department {
   CSE = 'Computer Science',
   ECE = 'Electronics & Communication',
   EEE = 'Electrical & Electronics',
-  MECH = 'Mechnical',
+  MECH = 'Mechanical',
   IT = 'Information Technology',
   AIDS = 'Artificial Intelligence & Data Science',
+  MBA = 'MBA',
 }
 
 export enum Year {
@@ -17,7 +18,7 @@ export enum Year {
 export interface UserIdentity {
   department: Department;
   year: Year;
-  name?: string;
+  name: string;
 }
 
 export enum PreferenceChoice {
