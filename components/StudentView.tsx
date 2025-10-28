@@ -99,7 +99,7 @@ export const StudentView: React.FC<StudentViewProps> = ({ identity, onBack }) =>
        <div className="relative bg-white rounded-xl shadow-xl p-6 md:p-8">
         <button onClick={onBack} className="absolute top-4 left-4 text-gray-400 hover:text-gray-600">&larr; Back</button>
         <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Hi, {identity.name || `${identity.department} Student`}!</h2>
+            <h2 className="text-2xl font-bold text-gray-800">Hi, {identity.name}!</h2>
             <p className="text-gray-500">{identity.year}{identity.year === 1 ? 'st' : identity.year === 2 ? 'nd' : identity.year === 3 ? 'rd' : 'th'} Year, {identity.department}</p>
         </div>
         <div className="bg-gray-50 rounded-lg">
