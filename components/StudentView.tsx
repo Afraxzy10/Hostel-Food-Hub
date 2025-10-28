@@ -10,18 +10,27 @@ interface StudentViewProps {
 export const StudentView: React.FC<StudentViewProps> = ({ identity, onBack }) => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [submissionsClosed, setSubmissionsClosed] = useState(true);
 
   const now = new Date();
   const day = now.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
-  const submissionsClosed = !areSubmissionsOpen();
   const todayString = now.toLocaleDateString('en-CA');
 
   useEffect(() => {
-    setSubmitted(hasSubmittedToday(identity, todayString));
-    setLoading(false);
+    const checkStatus = async () => {
+        setLoading(true);
+        const [hasSubmitted, isOpen] = await Promise.all([
+            hasSubmittedToday(identity, todayString),
+            areSubmissionsOpen()
+        ]);
+        setSubmitted(hasSubmitted);
+        setSubmissionsClosed(!isOpen);
+        setLoading(false);
+    };
+    checkStatus();
   }, [identity, todayString]);
 
-  const handlePreferenceSubmit = (choice: PreferenceChoice) => {
+  const handlePreferenceSubmit = async (choice: PreferenceChoice) => {
     if (submissionsClosed || submitted) return;
 
     const preference: Preference = {
@@ -30,7 +39,7 @@ export const StudentView: React.FC<StudentViewProps> = ({ identity, onBack }) =>
       date: todayString,
       day,
     };
-    savePreference(preference);
+    await savePreference(preference);
     setSubmitted(true);
   };
 
