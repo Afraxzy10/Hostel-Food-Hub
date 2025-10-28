@@ -26,12 +26,12 @@ const savePreferences = (preferences: Preference[]): void => {
 export const savePreference = (preference: Preference): void => {
   const allPreferences = getPreferences();
   // Create a unique key for each student to prevent duplicate submissions
-  const studentKey = `${preference.identity.department}-${preference.identity.year}-${preference.identity.name || 'anonymous'}`;
+  const studentKey = `${preference.identity.department}-${preference.identity.year}-${preference.identity.name}`;
   
   // Remove any previous submission from the same user for the same day
   const updatedPreferences = allPreferences.filter(
     p => {
-        const pKey = `${p.identity.department}-${p.identity.year}-${p.identity.name || 'anonymous'}`;
+        const pKey = `${p.identity.department}-${p.identity.year}-${p.identity.name}`;
         return !(p.date === preference.date && pKey === studentKey);
     }
   );
@@ -44,12 +44,18 @@ export const getPreferencesForDate = (date: string): Preference[] => {
   return getPreferences().filter(p => p.date === date);
 };
 
+export const resetPreferencesForDate = (date: string): void => {
+  const allPreferences = getPreferences();
+  const remainingPreferences = allPreferences.filter(p => p.date !== date);
+  savePreferences(remainingPreferences);
+};
+
 export const hasSubmittedToday = (identity: UserIdentity, date: string): boolean => {
   const todaysPreferences = getPreferencesForDate(date);
-  const studentKey = `${identity.department}-${identity.year}-${identity.name || 'anonymous'}`;
+  const studentKey = `${identity.department}-${identity.year}-${identity.name}`;
   return todaysPreferences.some(
     p => {
-        const pKey = `${p.identity.department}-${p.identity.year}-${p.identity.name || 'anonymous'}`;
+        const pKey = `${p.identity.department}-${p.identity.year}-${p.identity.name}`;
         return pKey === studentKey;
     }
   );
